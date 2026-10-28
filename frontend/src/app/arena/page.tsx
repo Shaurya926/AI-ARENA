@@ -28,7 +28,7 @@ import {
   type Verdict,
 } from "@/lib/arena-api";
 
-const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
+const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL ?? (process.env.VERCEL ? "" : "http://localhost:8000");
 
 function formatAsr(value: number | null): string {
   return value === null ? "N/A" : `${(value * 100).toFixed(1)}%`;

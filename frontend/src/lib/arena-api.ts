@@ -1,4 +1,4 @@
-const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
+const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL ?? (process.env.VERCEL ? "" : "http://localhost:8000");
 
 export type Verdict = "PASS" | "FAIL" | "NEEDS_REVIEW" | "ERROR";
 export type RunStatus = "queued" | "running" | "completed" | "failed";

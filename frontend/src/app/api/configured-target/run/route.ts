@@ -11,8 +11,14 @@ export async function POST(request: NextRequest) {
 
   const sessionToken = process.env.ARENA_UI_SESSION_TOKEN ?? "";
   const backendToken = process.env.ARENA_CONFIGURED_TARGETS_TOKEN ?? "";
-  const apiBase = (process.env.API_BASE_URL ?? process.env.NEXT_PUBLIC_API_BASE_URL ?? "").replace(/\/$/, "");
-  if (sessionToken.length < 32 || backendToken.length < 32 || !apiBase.startsWith("https://")) {
+  const backendBase = (
+    process.env.BACKEND_URL ??
+    process.env.API_BASE_URL ??
+    process.env.NEXT_PUBLIC_API_BASE_URL ??
+    ""
+  ).replace(/\/$/, "");
+  const upstreamUrl = backendBase ? new URL("/api/v1/runs", backendBase).toString() : "";
+  if (sessionToken.length < 32 || backendToken.length < 32 || !upstreamUrl.startsWith("https://")) {
     return NextResponse.json({ detail: "Configured-model server settings are incomplete." }, { status: 503 });
   }
 
@@ -36,7 +42,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const upstream = await fetch(`${apiBase}/api/v1/runs`, {
+    const upstream = await fetch(upstreamUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
